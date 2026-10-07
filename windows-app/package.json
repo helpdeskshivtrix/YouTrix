@@ -1,0 +1,41 @@
+{
+  "name": "youtrix",
+  "productName": "YouTrix",
+  "version": "1.0.0",
+  "description": "YouTrix - ShivTrix YouTube metadata library and player",
+  "author": "ShivTrix",
+  "main": "main.js",
+  "scripts": {
+    "prepare-web": "node scripts/prepare.js",
+    "start": "npm run prepare-web && electron .",
+    "build:win": "npm run prepare-web && electron-builder --win --x64 --publish never"
+  },
+  "devDependencies": {
+    "electron": "^31.7.3",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "app.shivtrix.youtrix",
+    "productName": "YouTrix",
+    "copyright": "ShivTrix",
+    "directories": { "output": "dist", "buildResources": "build" },
+    "files": ["main.js", "app-www/**/*"],
+    "win": {
+      "icon": "build/icon.ico",
+      "target": [
+        { "target": "nsis", "arch": ["x64"] },
+        { "target": "portable", "arch": ["x64"] }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "YouTrix",
+      "artifactName": "YouTrix-Setup-${version}.${ext}"
+    },
+    "portable": { "artifactName": "YouTrix-Portable-${version}.${ext}" }
+  }
+}

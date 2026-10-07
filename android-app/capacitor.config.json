@@ -1,0 +1,10 @@
+{
+  "appId": "app.shivtrix.youtrix",
+  "appName": "YouTrix",
+  "webDir": "www",
+  "backgroundColor": "#030407",
+  "server": {
+    "hostname": "helpdeskshivtrix.github.io",
+    "androidScheme": "https"
+  }
+}
