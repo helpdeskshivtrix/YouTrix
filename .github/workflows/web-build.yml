@@ -1,37 +1,37 @@
-name: Web Build Only
+name: Deploy Web to GitHub Pages
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main" ] # Change to "master" if your default branch is master
   workflow_dispatch:
 
-jobs:
-  build-web:
-    name: Build Web App
-    runs-on: ubuntu-latest
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
+# Allow only one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  deploy-web:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Flutter SDK
-        uses: subosito/flutter-action@v2
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact (www folder)
+        uses: actions/upload-pages-artifact@v3
         with:
-          flutter-version: 'stable'
-          channel: 'stable'
-          cache: true
+          # Points directly to your www folder where index.html lives
+          path: './www'
 
-      - name: Enable Web support
-        run: flutter config --enable-web
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Build Web
-        run: flutter build web --release
-
-      - name: Upload Web Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: web-build
-          path: build/web
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
