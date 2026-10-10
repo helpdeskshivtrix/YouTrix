@@ -1,4 +1,4 @@
-name: Web Build
+name: Web Build Only
 
 on:
   push:
@@ -6,40 +6,13 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-all:
-    name: Build Web, APK, and Windows App
-    runs-on: ubuntu-latest # Primary runner coordination, individual jobs override as needed
-
-    strategy:
-      matrix:
-        include:
-          - target: web
-            os: ubuntu-latest
-            build-cmd: flutter build web
-            artifact-path: build/web
-            artifact-name: web-build
-
-          - target: apk
-            os: ubuntu-latest
-            build-cmd: flutter build apk --release
-            artifact-path: build/app/outputs/flutter-apk/app-release.apk
-            artifact-name: android-apk
-
-          - target: windows
-            os: windows-latest
-            build-cmd: flutter build windows --release
-            artifact-path: build/windows/runner/Release
-            artifact-name: windows-app
+  build-web:
+    name: Build Web App
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Set up Java (Required for Android)
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: '17'
 
       - name: Set up Flutter SDK
         uses: subosito/flutter-action@v2
@@ -48,19 +21,17 @@ jobs:
           channel: 'stable'
           cache: true
 
-      - name: Enable Desktop & Web support (if needed)
-        run: |
-          flutter config --enable-web
-          flutter config --enable-windows-desktop
+      - name: Enable Web support
+        run: flutter config --enable-web
 
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Build target (${{ matrix.target }})
-        run: ${{ matrix.build-cmd }}
+      - name: Build Web
+        run: flutter build web --release
 
-      - name: Upload Artifact (${{ matrix.target }})
+      - name: Upload Web Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.artifact-name }}
-          path: ${{ matrix.artifact-path }}
+          name: web-build
+          path: build/web
